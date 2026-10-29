@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Admin Login — QuizNest{% endblock %}
+{% block body_class %}qs-auth-page qs-admin-page{% endblock %}
+
+{% block content %}
+<section class="qs-auth-section qs-admin-auth-section">
+  <div class="container">
+    <div class="row justify-content-center align-items-center gy-4">
+
+      <div class="col-lg-5 qs-reveal">
+        <div class="qs-auth-side">
+          <span class="qs-eyebrow qs-eyebrow-admin"><i class="bi bi-shield-lock-fill me-1"></i>Admin Access</span>
+          <h2>QuizNest Admin Panel</h2>
+          <p>Manage students, quizzes, and results from a single dashboard.
+             This area is restricted to authorized administrators only.</p>
+          <ul class="qs-check-list">
+            <li><i class="bi bi-check-circle-fill"></i>View all registered students</li>
+            <li><i class="bi bi-check-circle-fill"></i>Manage quizzes &amp; questions</li>
+            <li><i class="bi bi-check-circle-fill"></i>Track platform-wide activity</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-5 qs-reveal" data-delay="120">
+        <div class="qs-auth-card qs-admin-card">
+          <h3><i class="bi bi-shield-lock me-2"></i>Admin Login</h3>
+          <p class="qs-auth-subtext">Restricted access — administrators only.</p>
+
+          <form method="POST" action="{{ url_for('admin_login') }}" novalidate>
+            <div class="mb-3">
+              <label for="email" class="form-label">Admin email</label>
+              <input type="email" class="form-control qs-input" id="email" name="email" placeholder="admin@example.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control qs-input" id="password" name="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn qs-btn-primary qs-btn-admin w-100 py-2 mt-2">Login to Admin Panel</button>
+          </form>
+
+          <p class="qs-auth-switch">Not an admin? <a href="{{ url_for('login') }}">Go to student login</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

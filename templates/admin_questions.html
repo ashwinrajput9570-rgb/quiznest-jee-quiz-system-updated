@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Question Bank — QuizNest Admin{% endblock %}
+
+{% block content %}
+<section class="qs-section qs-admin-dashboard">
+  <div class="container">
+    <div class="qs-reveal d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <span class="qs-section-eyebrow qs-eyebrow-admin"><i class="bi bi-patch-question me-1"></i>Admin</span>
+        <h2 class="qs-section-title mb-1">JEE Question Bank</h2>
+        <p class="qs-section-text mb-0">{{ questions|length }} question(s) matching the current filter.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn qs-btn-outline"><i class="bi bi-arrow-left me-2"></i>Back</a>
+        <a href="{{ url_for('admin_question_add') }}" class="btn qs-btn-primary"><i class="bi bi-plus-lg me-2"></i>Add Question</a>
+      </div>
+    </div>
+
+    <form method="GET" class="row g-2 mt-3 qs-reveal">
+      <div class="col-md-4">
+        <select name="subject_id" class="form-select" onchange="this.form.submit()">
+          <option value="">All Subjects</option>
+          {% for s in subjects %}
+          <option value="{{ s['id'] }}" {% if selected_subject == s['id'] %}selected{% endif %}>{{ s['name'] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <select name="topic_id" class="form-select" onchange="this.form.submit()">
+          <option value="">All Topics</option>
+          {% for t in topics %}
+          <option value="{{ t['id'] }}" {% if selected_topic == t['id'] %}selected{% endif %}>{{ t['name'] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+
+    <div class="qs-admin-table-wrap mt-4 qs-reveal" data-delay="80">
+      {% if questions %}
+      <table class="table qs-admin-table align-middle mb-0">
+        <thead>
+          <tr><th>Question</th><th>Subject / Topic</th><th>Difficulty</th><th>Marks</th><th>Answer</th><th style="width:110px;">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for q in questions %}
+          <tr>
+            <td style="max-width:340px;">{{ q['question_text'] }}</td>
+            <td>{{ q['subject_name'] }}<br><small class="text-muted">{{ q['topic_name'] }}</small></td>
+            <td><span class="qs-quiz-tag">{{ q['difficulty'] }}</span></td>
+            <td>{{ q['marks'] }}</td>
+            <td>{{ q['correct_option'] }}</td>
+            <td>
+              <a href="{{ url_for('admin_question_edit', question_id=q['id']) }}" class="btn btn-sm qs-btn-outline"><i class="bi bi-pencil"></i></a>
+              <form method="POST" action="{{ url_for('admin_question_delete', question_id=q['id']) }}" class="d-inline"
+                    onsubmit="return confirm('Delete this question?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="qs-admin-empty qs-admin-empty-dashed">
+        <i class="bi bi-inbox"></i>
+        <p>No questions found. <a href="{{ url_for('admin_question_add') }}">Add the first one.</a></p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

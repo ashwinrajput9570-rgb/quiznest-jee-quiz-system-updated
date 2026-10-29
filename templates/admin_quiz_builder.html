@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Manage Questions — {{ quiz['title'] }}{% endblock %}
+
+{% block content %}
+<section class="qs-section qs-admin-dashboard">
+  <div class="container">
+    <div class="qs-reveal d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <span class="qs-section-eyebrow qs-eyebrow-admin"><i class="bi bi-list-check me-1"></i>Admin</span>
+        <h2 class="qs-section-title mb-1">{{ quiz['title'] }}</h2>
+        <p class="qs-section-text mb-0">{{ current_questions|length }} question(s) &middot; {{ total_marks }} total marks &middot; {{ quiz['duration_minutes'] }} min</p>
+      </div>
+      <a href="{{ url_for('admin_quizzes') }}" class="btn qs-btn-outline"><i class="bi bi-arrow-left me-2"></i>Back to Quizzes</a>
+    </div>
+
+    <div class="row g-4 mt-2">
+      <!-- Current questions -->
+      <div class="col-lg-6 qs-reveal">
+        <h3 class="h6 fw-bold mb-2">In this quiz</h3>
+        <div class="qs-admin-table-wrap">
+          {% if current_questions %}
+          <table class="table qs-admin-table align-middle mb-0">
+            <thead><tr><th>#</th><th>Question</th><th></th></tr></thead>
+            <tbody>
+              {% for q in current_questions %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td style="max-width:260px;">{{ q['question_text'] }} <span class="qs-quiz-tag">{{ q['marks'] }} mk</span></td>
+                <td>
+                  <form method="POST" action="{{ url_for('admin_quiz_builder_remove', quiz_id=quiz['id']) }}">
+                    <input type="hidden" name="question_id" value="{{ q['id'] }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-dash-circle"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="qs-admin-empty"><i class="bi bi-inbox"></i><p>No questions added yet — pick some from the right.</p></div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Available questions -->
+      <div class="col-lg-6 qs-reveal" data-delay="80">
+        <h3 class="h6 fw-bold mb-2">Add from question bank</h3>
+        <form method="GET" class="row g-2 mb-2">
+          <div class="col-6">
+            <select name="subject_id" class="form-select form-select-sm" onchange="this.form.submit()">
+              <option value="">All Subjects</option>
+              {% for s in subjects %}
+              <option value="{{ s['id'] }}" {% if selected_subject == s['id'] %}selected{% endif %}>{{ s['name'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-6">
+            <select name="topic_id" class="form-select form-select-sm" onchange="this.form.submit()">
+              <option value="">All Topics</option>
+              {% for t in topics %}
+              <option value="{{ t['id'] }}" {% if selected_topic == t['id'] %}selected{% endif %}>{{ t['name'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+        <div class="qs-admin-table-wrap" style="max-height:520px; overflow-y:auto;">
+          {% if available_questions %}
+          <table class="table qs-admin-table align-middle mb-0">
+            <thead><tr><th>Question</th><th></th></tr></thead>
+            <tbody>
+              {% for q in available_questions %}
+              <tr>
+                <td style="max-width:300px;">{{ q['question_text'] }}<br>
+                  <small class="text-muted">{{ q['subject_name'] }} / {{ q['topic_name'] }} &middot; {{ q['difficulty'] }}</small>
+                </td>
+                <td>
+                  <form method="POST" action="{{ url_for('admin_quiz_builder_add', quiz_id=quiz['id']) }}">
+                    <input type="hidden" name="question_id" value="{{ q['id'] }}">
+                    <button class="btn btn-sm qs-btn-primary" type="submit"><i class="bi bi-plus-lg"></i></button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <div class="qs-admin-empty"><i class="bi bi-check2-circle"></i><p>No more matching questions to add.</p></div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

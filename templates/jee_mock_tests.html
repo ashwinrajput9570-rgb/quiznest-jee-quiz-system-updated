@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Mock Tests — JEE Prep{% endblock %}
+
+{% block content %}
+<section class="qs-section" style="margin-top:5.5rem;">
+  <div class="container">
+    <div class="qs-reveal d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <span class="qs-section-eyebrow">JEE Preparation</span>
+        <h2 class="qs-section-title mb-1">Mock Tests</h2>
+        <p class="qs-section-text mb-0">Full-length tests spanning Physics, Chemistry & Mathematics.</p>
+      </div>
+      <a href="{{ url_for('jee_home') }}" class="btn qs-btn-outline"><i class="bi bi-arrow-left me-2"></i>Back</a>
+    </div>
+
+    <div class="qs-admin-table-wrap mt-4 qs-reveal">
+      {% if mock_tests %}
+      <table class="table qs-admin-table align-middle mb-0">
+        <thead><tr><th>Mock Test</th><th>Questions</th><th>Duration</th><th></th></tr></thead>
+        <tbody>
+          {% for z in mock_tests %}
+          <tr>
+            <td>{{ z['title'] }}<br><small class="text-muted">{{ z['description'] }}</small></td>
+            <td>{{ z['question_count'] }}</td>
+            <td>{{ z['duration_minutes'] }} min</td>
+            <td><form method="POST" action="{{ url_for('quiz_start', quiz_id=z['id']) }}"><button class="btn btn-sm qs-btn-primary" type="submit">Start</button></form></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="qs-admin-empty qs-admin-empty-dashed"><i class="bi bi-inbox"></i><p>No mock tests published yet.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — QuizNest{% endblock %}
+
+{% block content %}
+<section class="qs-section" style="margin-top:5.5rem;">
+  <div class="container">
+    <div class="qs-reveal">
+      <span class="qs-section-eyebrow">Your space</span>
+      <h2 class="qs-section-title">Welcome, {{ full_name }} 👋</h2>
+      <p class="qs-section-text">Track your JEE preparation progress and jump back into practice.</p>
+    </div>
+
+    <div class="row g-4 mt-3">
+      <div class="col-md-4 qs-reveal">
+        <div class="qs-stat-card">
+          <i class="bi bi-journal-check"></i>
+          <h3>{{ quizzes_taken }} Quizzes Taken</h3>
+          <p>Keep the streak going — practice a little every day.</p>
+        </div>
+      </div>
+      <div class="col-md-4 qs-reveal" data-delay="80">
+        <div class="qs-stat-card qs-stat-card-alt">
+          <i class="bi bi-graph-up"></i>
+          <h3>{{ avg_score }}% Average Score</h3>
+          <p>Across all your submitted attempts.</p>
+        </div>
+      </div>
+      <div class="col-md-4 qs-reveal" data-delay="160">
+        <div class="qs-stat-card">
+          <i class="bi bi-mortarboard"></i>
+          <h3>{{ subjects|length }} Subjects</h3>
+          <p>Physics, Chemistry & Mathematics topic-wise practice.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="qs-reveal mt-5" data-delay="120">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h3 class="mb-0" style="font-size:1.15rem; font-weight:700; color: var(--qs-navy);">Recent Results</h3>
+        <a href="{{ url_for('my_results') }}" class="qs-quiz-tag text-decoration-none">View all →</a>
+      </div>
+      <div class="qs-admin-table-wrap">
+        {% if recent_attempts %}
+        <table class="table qs-admin-table align-middle mb-0">
+          <thead>
+            <tr><th>Quiz</th><th>Score</th><th>Date</th><th></th></tr>
+          </thead>
+          <tbody>
+            {% for a in recent_attempts %}
+            <tr>
+              <td>{{ a['title'] }}</td>
+              <td>{{ a['score']|round(1) }} / {{ a['total_marks']|round(1) }}</td>
+              <td>{{ a['submitted_at'][:10] }}</td>
+              <td><a href="{{ url_for('quiz_result', attempt_id=a['id']) }}" class="btn btn-sm qs-btn-outline">Review</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="qs-admin-empty">
+          <i class="bi bi-inbox"></i>
+          <p>No quizzes taken yet — start your first one below.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="qs-reveal mt-5" data-delay="160">
+      <h3 style="font-size:1.15rem; font-weight:700; color: var(--qs-navy);">Start Practicing</h3>
+      <div class="row g-3 mt-1">
+        {% for s in subjects %}
+        <div class="col-md-4">
+          <a href="{{ url_for('jee_subject', subject_id=s['id']) }}" class="text-decoration-none">
+            <div class="qs-stat-card h-100">
+              <i class="bi bi-book"></i>
+              <h3>{{ s['name'] }}</h3>
+              <p>Browse topics & quizzes</p>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      <a href="{{ url_for('jee_home') }}" class="btn qs-btn-primary mt-4"><i class="bi bi-mortarboard me-2"></i>Go to JEE Prep Hub</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

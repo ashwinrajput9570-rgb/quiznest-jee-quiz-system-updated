@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}JEE Preparation — QuizNest{% endblock %}
+
+{% block content %}
+<section class="qs-section" style="margin-top:5.5rem;">
+  <div class="container">
+    <div class="qs-reveal">
+      <span class="qs-section-eyebrow">JEE Preparation</span>
+      <h2 class="qs-section-title">Pick a subject to start practicing</h2>
+      <p class="qs-section-text">Physics, Chemistry & Mathematics — topic-wise quizzes and full mock tests for JEE Main.</p>
+    </div>
+
+    <div class="row g-4 mt-2">
+      {% for item in subject_stats %}
+      <div class="col-md-4 qs-reveal" data-delay="{{ loop.index0 * 80 }}">
+        <a href="{{ url_for('jee_subject', subject_id=item.subject['id']) }}" class="text-decoration-none">
+          <div class="qs-stat-card h-100">
+            <i class="bi bi-{{ ['calculator','moisture','book'][loop.index0 % 3] }}"></i>
+            <h3>{{ item.subject['name'] }}</h3>
+            <p>{{ item.topics }} topics &middot; {{ item.questions }} questions</p>
+          </div>
+        </a>
+      </div>
+      {% else %}
+      <div class="col-12">
+        <div class="qs-admin-empty qs-admin-empty-dashed">
+          <i class="bi bi-inbox"></i>
+          <p>No subjects available yet. Please check back once the admin has added JEE content.</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="qs-reveal mt-5" data-delay="120">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h3 style="font-size:1.15rem; font-weight:700; color: var(--qs-navy);">Mock Tests</h3>
+        <a href="{{ url_for('jee_mock_tests') }}" class="qs-quiz-tag text-decoration-none">View all →</a>
+      </div>
+      <div class="qs-admin-table-wrap">
+        {% if mock_tests %}
+        <table class="table qs-admin-table align-middle mb-0">
+          <thead><tr><th>Mock Test</th><th>Duration</th><th></th></tr></thead>
+          <tbody>
+            {% for m in mock_tests[:5] %}
+            <tr>
+              <td>{{ m['title'] }}</td>
+              <td>{{ m['duration_minutes'] }} min</td>
+              <td>
+                <form method="POST" action="{{ url_for('quiz_start', quiz_id=m['id']) }}">
+                  <button class="btn btn-sm qs-btn-primary" type="submit">Start</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="qs-admin-empty"><i class="bi bi-inbox"></i><p>No mock tests published yet.</p></div>
+        {% endif %}
+      </div>
+    </div>
+
+    <a href="{{ url_for('my_results') }}" class="btn qs-btn-outline mt-4"><i class="bi bi-graph-up me-2"></i>My Results</a>
+  </div>
+</section>
+{% endblock %}

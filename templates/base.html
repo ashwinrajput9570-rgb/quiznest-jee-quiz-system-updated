@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}QuizNest — JEE Preparation{% endblock %}</title>
+<meta name="description" content="A modern, secure platform for JEE Main preparation — Physics, Chemistry & Mathematics quizzes with instant results.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+<!-- Custom styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+<!-- ===== Navbar ===== -->
+<nav class="navbar navbar-expand-lg fixed-top qs-navbar" id="qsNavbar">
+  <div class="container">
+    <a class="navbar-brand qs-brand" href="{{ url_for('home') }}">
+      <span class="qs-brand-icon"><i class="bi bi-patch-check-fill"></i></span>
+      QuizNest
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#qsNav" aria-controls="qsNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="qsNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}#top">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}#features">Features</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}#contact">Contact</a></li>
+        {% if session.get('user_id') %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('jee_home') }}"><i class="bi bi-mortarboard me-1"></i>JEE Prep</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn qs-btn-outline btn-sm px-3" href="{{ url_for('logout') }}">Logout</a></li>
+        {% elif session.get('admin_id') %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard') }}"><i class="bi bi-shield-lock me-1"></i>Admin Dashboard</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn qs-btn-outline btn-sm px-3" href="{{ url_for('admin_logout') }}">Logout</a></li>
+        {% else %}
+          <li class="nav-item ms-lg-2"><a class="btn qs-btn-outline btn-sm px-3" href="{{ url_for('login') }}">Login</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn qs-btn-primary btn-sm px-3" href="{{ url_for('register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Flash messages ===== -->
+<div class="qs-flash-wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="container pt-3">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'danger' else category }} alert-dismissible fade show qs-alert" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+</div>
+
+{% block content %}{% endblock %}
+
+<!-- ===== Footer ===== -->
+<footer class="qs-footer" id="contact">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4">
+        <a class="qs-brand qs-brand-footer" href="{{ url_for('home') }}">
+          <span class="qs-brand-icon"><i class="bi bi-patch-check-fill"></i></span>
+          QuizNest
+        </a>
+        <p class="qs-footer-text mt-3">
+          A clean, secure platform for building and taking MCQ quizzes —
+          built as a college mini-project to demonstrate full-stack web development.
+        </p>
+        <div class="qs-social">
+          <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" aria-label="Twitter / X"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+          <a href="#" aria-label="GitHub"><i class="bi bi-github"></i></a>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="qs-footer-heading">Navigate</h6>
+        <ul class="qs-footer-links">
+          <li><a href="{{ url_for('home') }}#top">Home</a></li>
+          <li><a href="{{ url_for('home') }}#about">About</a></li>
+          <li><a href="{{ url_for('home') }}#features">Features</a></li>
+          <li><a href="{{ url_for('home') }}#how-it-works">How it Works</a></li>
+        </ul>
+      </div>
+
+      <div class="col-6 col-lg-2">
+        <h6 class="qs-footer-heading">Account</h6>
+        <ul class="qs-footer-links">
+          <li><a href="{{ url_for('login') }}">Login</a></li>
+          <li><a href="{{ url_for('register') }}">Register</a></li>
+          <li><a href="{{ url_for('home') }}#faqs">FAQs</a></li>
+          <li><a href="{{ url_for('admin_login') }}"><i class="bi bi-shield-lock me-1"></i>Admin Login</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-4">
+        <h6 class="qs-footer-heading">Get in touch</h6>
+        <ul class="qs-footer-links">
+          <li><i class="bi bi-envelope me-2"></i>support@quiznest.edu</li>
+          <li><i class="bi bi-geo-alt me-2"></i>Dept. of Computer Science, College Campus</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="qs-footer-divider">
+    <p class="qs-footer-bottom">&copy; <span id="year"></span> QuizNest. Built for academic demonstration purposes.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

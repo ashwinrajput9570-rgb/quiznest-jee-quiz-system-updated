@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if quiz else 'Create' }} Quiz — QuizNest Admin{% endblock %}
+
+{% block content %}
+<section class="qs-section qs-admin-dashboard">
+  <div class="container" style="max-width:720px;">
+    <div class="qs-reveal d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <span class="qs-section-eyebrow qs-eyebrow-admin"><i class="bi bi-journal-plus me-1"></i>Admin</span>
+        <h2 class="qs-section-title mb-1">{{ 'Edit Quiz' if quiz else 'Create Quiz' }}</h2>
+      </div>
+      <a href="{{ url_for('admin_quizzes') }}" class="btn qs-btn-outline"><i class="bi bi-arrow-left me-2"></i>Back</a>
+    </div>
+
+    <div class="qs-admin-card mt-4 qs-reveal">
+      <form method="POST">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold">Title</label>
+            <input type="text" name="title" class="form-control" required
+                   value="{{ form.get('title') if form else '' }}" placeholder="e.g. Mechanics — Topic Test">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold">Description</label>
+            <textarea name="description" class="form-control" rows="2">{{ form.get('description') if form else '' }}</textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Subject</label>
+            <select name="subject_id" class="form-select" onchange="window.location.href = updateParam('subject_id', this.value)">
+              <option value="">All subjects (for a full mock test)</option>
+              {% for s in subjects %}
+              <option value="{{ s['id'] }}" {% if form and form.get('subject_id')|string == s['id']|string %}selected{% endif %}>{{ s['name'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Topic <small class="text-muted">(optional — leave blank for a subject-wide quiz)</small></label>
+            <select name="topic_id" class="form-select">
+              <option value="">No specific topic</option>
+              {% for t in topics %}
+              <option value="{{ t['id'] }}" {% if form and form.get('topic_id')|string == t['id']|string %}selected{% endif %}>{{ t['name'] }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Duration (minutes)</label>
+            <input type="number" name="duration_minutes" class="form-control" min="1"
+                   value="{{ form.get('duration_minutes') if form and form.get('duration_minutes') else 30 }}">
+          </div>
+          <div class="col-md-6 d-flex align-items-end">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="is_mock" id="isMock"
+                     {% if form and form.get('is_mock') in ('on', 1, True) %}checked{% endif %}>
+              <label class="form-check-label fw-semibold" for="isMock">This is a full JEE mock test (spans all subjects)</label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn qs-btn-primary mt-4">
+          <i class="bi bi-check-lg me-2"></i>{{ 'Save Changes' if quiz else 'Create & Add Questions' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  function updateParam(key, value) {
+    var url = new URL(window.location.href);
+    url.searchParams.set(key, value);
+    return url.toString();
+  }
+</script>
+{% endblock %}

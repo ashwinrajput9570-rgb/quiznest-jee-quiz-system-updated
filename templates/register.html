@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Register — QuizNest{% endblock %}
+{% block body_class %}qs-auth-page{% endblock %}
+
+{% block content %}
+<section class="qs-auth-section">
+  <div class="container">
+    <div class="row justify-content-center align-items-center gy-4">
+
+      <div class="col-lg-5 qs-reveal">
+        <div class="qs-auth-side">
+          <span class="qs-eyebrow"><i class="bi bi-stars me-1"></i>Join for free</span>
+          <h2>Create your QuizNest account</h2>
+          <p>Sign up in under a minute and get access to timed MCQ quizzes,
+             instant results, and a personal progress dashboard.</p>
+          <ul class="qs-check-list">
+            <li><i class="bi bi-check-circle-fill"></i>No credit card required</li>
+            <li><i class="bi bi-check-circle-fill"></i>Unlimited quiz attempts</li>
+            <li><i class="bi bi-check-circle-fill"></i>Works on any device</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-5 qs-reveal" data-delay="120">
+        <div class="qs-auth-card">
+          <h3><i class="bi bi-person-plus me-2"></i>Register</h3>
+          <p class="qs-auth-subtext">It only takes a minute.</p>
+
+          <form method="POST" action="{{ url_for('register') }}" novalidate>
+            <div class="mb-3">
+              <label for="full_name" class="form-label">Full name</label>
+              <input type="text" class="form-control qs-input" id="full_name" name="full_name" placeholder="Jane Doe" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control qs-input" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control qs-input" id="password" name="password" placeholder="At least 6 characters" minlength="6" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">Confirm password</label>
+              <input type="password" class="form-control qs-input" id="confirm_password" name="confirm_password" placeholder="Re-enter password" minlength="6" required>
+            </div>
+            <button type="submit" class="btn qs-btn-primary w-100 py-2 mt-2">Create account</button>
+          </form>
+
+          <p class="qs-auth-switch">Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

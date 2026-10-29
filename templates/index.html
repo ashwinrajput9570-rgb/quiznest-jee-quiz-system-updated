@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+{% block title %}QuizNest — JEE Preparation Quiz System{% endblock %}
+{% block body_class %}qs-home{% endblock %}
+
+{% block content %}
+
+<!-- ===== Hero ===== -->
+<header class="qs-hero" id="top">
+  <div class="container">
+    <div class="row align-items-center gy-5">
+      <div class="col-lg-6 qs-reveal">
+        <span class="qs-eyebrow"><i class="bi bi-mortarboard-fill me-1"></i> Built for JEE Main aspirants</span>
+        <h1 class="qs-hero-title">JEE Preparation Quiz System</h1>
+        <p class="qs-hero-text">
+          Practice Physics, Chemistry & Mathematics with topic-wise quizzes and
+          full-length mock tests, timed and auto-scored — all on one clean,
+          secure platform that tracks your progress from first attempt to mastery.
+        </p>
+        <div class="qs-hero-actions">
+          <a href="{{ url_for('login') }}" class="btn qs-btn-primary btn-lg px-4">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Login
+          </a>
+          <a href="{{ url_for('register') }}" class="btn qs-btn-outline btn-lg px-4">
+            <i class="bi bi-person-plus me-2"></i>Register Free
+          </a>
+        </div>
+        <div class="qs-hero-stats">
+          <div><strong>10,000+</strong><span>Students</span></div>
+          <div><strong>500+</strong><span>Quizzes hosted</span></div>
+          <div><strong>98%</strong><span>Instant accuracy</span></div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 qs-reveal" data-delay="150">
+        <!-- Signature element: live animated quiz-card mockup -->
+        <div class="qs-quiz-mock">
+          <div class="qs-quiz-mock-glow"></div>
+          <div class="qs-quiz-card">
+            <div class="qs-quiz-card-head">
+              <span class="qs-quiz-tag" id="mockQNum">Question 1 of 5</span>
+              <span class="qs-quiz-timer"><i class="bi bi-stopwatch-fill me-1"></i><span id="mockTimer">15</span>s</span>
+            </div>
+            <p class="qs-quiz-question" id="mockQuestion">Which data structure uses FIFO order?</p>
+            <ul class="qs-quiz-options" id="mockOptions">
+              <li data-correct="false"><span class="qs-opt-letter">A</span>Stack</li>
+              <li data-correct="true"><span class="qs-opt-letter">B</span>Queue</li>
+              <li data-correct="false"><span class="qs-opt-letter">C</span>Tree</li>
+              <li data-correct="false"><span class="qs-opt-letter">D</span>Graph</li>
+            </ul>
+            <div class="qs-quiz-progress">
+              <div class="qs-quiz-progress-bar" id="mockProgress"></div>
+            </div>
+          </div>
+          <div class="qs-quiz-float-badge">
+            <i class="bi bi-graph-up-arrow"></i>
+            <div><strong>Instant</strong><span>Results</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== About ===== -->
+<section class="qs-section" id="about">
+  <div class="container">
+    <div class="row align-items-center gy-4">
+      <div class="col-lg-6 qs-reveal">
+        <span class="qs-section-eyebrow">About the platform</span>
+        <h2 class="qs-section-title">One platform, every step of the quiz.</h2>
+        <p class="qs-section-text">
+          QuizNest was designed as a college mini-project to demonstrate a complete,
+          working web application — from a secure registration flow to real-time,
+          timed multiple-choice testing. Educators can publish quizzes in minutes;
+          students get a distraction-free interface and instant feedback the moment
+          they submit an answer.
+        </p>
+        <ul class="qs-check-list">
+          <li><i class="bi bi-check-circle-fill"></i>No installation — works on any browser</li>
+          <li><i class="bi bi-check-circle-fill"></i>Responsive layout for phones, tablets &amp; desktops</li>
+          <li><i class="bi bi-check-circle-fill"></i>Built with Flask, Bootstrap &amp; vanilla JavaScript</li>
+        </ul>
+      </div>
+      <div class="col-lg-6 qs-reveal" data-delay="150">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="qs-stat-card">
+              <i class="bi bi-lightning-charge-fill"></i>
+              <h3>Fast Setup</h3>
+              <p>Launch a quiz in under 2 minutes.</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="qs-stat-card qs-stat-card-alt">
+              <i class="bi bi-shield-lock-fill"></i>
+              <h3>Secure</h3>
+              <p>Hashed passwords &amp; session auth.</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="qs-stat-card qs-stat-card-alt">
+              <i class="bi bi-bar-chart-line-fill"></i>
+              <h3>Analytics</h3>
+              <p>Track scores over time.</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="qs-stat-card">
+              <i class="bi bi-phone-fill"></i>
+              <h3>Mobile Ready</h3>
+              <p>Quiz on any device, anywhere.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Features ===== -->
+<section class="qs-section qs-section-alt" id="features">
+  <div class="container">
+    <div class="text-center qs-reveal">
+      <span class="qs-section-eyebrow">What you get</span>
+      <h2 class="qs-section-title">Everything a modern quiz needs</h2>
+      <p class="qs-section-text mx-auto" style="max-width:640px;">
+        Every feature below was purpose-built to make quizzes faster to run
+        and fairer to take.
+      </p>
+    </div>
+
+    <div class="row g-4 mt-2">
+      <div class="col-md-6 col-lg-4 qs-reveal">
+        <div class="qs-feature-card">
+          <div class="qs-feature-icon"><i class="bi bi-list-check"></i></div>
+          <h3>MCQ Quizzes</h3>
+          <p>Build multiple-choice quizzes with single or multiple correct answers, images, and custom scoring.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 qs-reveal" data-delay="80">
+        <div class="qs-feature-card">
+          <div class="qs-feature-icon"><i class="bi bi-stopwatch"></i></div>
+          <h3>Timed Sessions</h3>
+          <p>Set a countdown per question or for the whole quiz — auto-submits the moment time runs out.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 qs-reveal" data-delay="160">
+        <div class="qs-feature-icon-wrap">
+          <div class="qs-feature-card">
+            <div class="qs-feature-icon"><i class="bi bi-lightning-charge"></i></div>
+            <h3>Instant Results</h3>
+            <p>Scores, correct answers, and explanations appear the second a quiz is submitted — no waiting.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 qs-reveal">
+        <div class="qs-feature-card">
+          <div class="qs-feature-icon"><i class="bi bi-shield-lock"></i></div>
+          <h3>Secure Login</h3>
+          <p>Passwords are hashed and sessions are protected, so accounts and scores stay private.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 qs-reveal" data-delay="80">
+        <div class="qs-feature-card">
+          <div class="qs-feature-icon"><i class="bi bi-graph-up"></i></div>
+          <h3>Progress Tracking</h3>
+          <p>Every attempt is logged so students and teachers can see improvement over time.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 qs-reveal" data-delay="160">
+        <div class="qs-feature-card">
+          <div class="qs-feature-icon"><i class="bi bi-phone"></i></div>
+          <h3>Mobile Friendly</h3>
+          <p>A fully responsive UI means quizzes look and work great on any screen size.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== How it works ===== -->
+<section class="qs-section" id="how-it-works">
+  <div class="container">
+    <div class="text-center qs-reveal">
+      <span class="qs-section-eyebrow">The process</span>
+      <h2 class="qs-section-title">How it works</h2>
+    </div>
+
+    <div class="qs-steps mt-5">
+      <div class="qs-step qs-reveal">
+        <div class="qs-step-num">1</div>
+        <h3>Create an account</h3>
+        <p>Register with your name and email — it takes less than a minute.</p>
+      </div>
+      <div class="qs-step qs-reveal" data-delay="100">
+        <div class="qs-step-num">2</div>
+        <h3>Pick a quiz</h3>
+        <p>Browse available quizzes by subject, difficulty, or topic.</p>
+      </div>
+      <div class="qs-step qs-reveal" data-delay="200">
+        <div class="qs-step-num">3</div>
+        <h3>Answer &amp; beat the timer</h3>
+        <p>Work through MCQs before the countdown hits zero.</p>
+      </div>
+      <div class="qs-step qs-reveal" data-delay="300">
+        <div class="qs-step-num">4</div>
+        <h3>Get instant results</h3>
+        <p>See your score, correct answers, and updated progress right away.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<section class="qs-section qs-section-dark">
+  <div class="container">
+    <div class="text-center qs-reveal">
+      <span class="qs-section-eyebrow qs-section-eyebrow-light">Feedback</span>
+      <h2 class="qs-section-title qs-title-light">What learners are saying</h2>
+    </div>
+
+    <div id="qsTestimonials" class="carousel slide mt-5" data-bs-ride="carousel" data-bs-interval="4500">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="qs-testimonial-card">
+                <i class="bi bi-quote qs-quote-icon"></i>
+                <p>"The timer keeps me honest during practice tests, and seeing my score
+                instantly helps me know exactly what to revise before the real exam."</p>
+                <div class="qs-testimonial-author">
+                  <div class="qs-avatar">AS</div>
+                  <div><strong>Aditi Sharma</strong><span>B.Tech, Computer Science</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="qs-testimonial-card">
+                <i class="bi bi-quote qs-quote-icon"></i>
+                <p>"I use QuizNest to run weekly quizzes for my class. Setting up questions
+                and reviewing everyone's progress takes minutes, not hours."</p>
+                <div class="qs-testimonial-author">
+                  <div class="qs-avatar">RK</div>
+                  <div><strong>Rohit Kulkarni</strong><span>Assistant Professor</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="qs-testimonial-card">
+                <i class="bi bi-quote qs-quote-icon"></i>
+                <p>"Clean interface, works perfectly on my phone between classes, and the
+                progress tracker actually motivates me to keep improving."</p>
+                <div class="qs-testimonial-author">
+                  <div class="qs-avatar">MP</div>
+                  <div><strong>Meera Patel</strong><span>B.Sc, Information Technology</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#qsTestimonials" data-bs-slide="prev">
+        <span class="qs-carousel-arrow"><i class="bi bi-chevron-left"></i></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#qsTestimonials" data-bs-slide="next">
+        <span class="qs-carousel-arrow"><i class="bi bi-chevron-right"></i></span>
+      </button>
+      <div class="carousel-indicators qs-carousel-dots">
+        <button type="button" data-bs-target="#qsTestimonials" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#qsTestimonials" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#qsTestimonials" data-bs-slide-to="2"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQs ===== -->
+<section class="qs-section" id="faqs">
+  <div class="container">
+    <div class="text-center qs-reveal">
+      <span class="qs-section-eyebrow">Questions</span>
+      <h2 class="qs-section-title">Frequently asked questions</h2>
+    </div>
+
+    <div class="row justify-content-center mt-4">
+      <div class="col-lg-9 qs-reveal">
+        <div class="accordion qs-accordion" id="qsFaqAccordion">
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                Is QuizNest free to use?
+              </button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#qsFaqAccordion">
+              <div class="accordion-body">
+                Yes. Registration and taking quizzes are completely free — this project
+                was built as an academic demonstration and has no paid tiers.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                How is my password kept secure?
+              </button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#qsFaqAccordion">
+              <div class="accordion-body">
+                Passwords are never stored as plain text. They're hashed using Werkzeug's
+                secure hashing before being saved, and login sessions are protected server-side.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                What happens if the timer runs out mid-quiz?
+              </button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#qsFaqAccordion">
+              <div class="accordion-body">
+                Your current answers are automatically submitted, and you're taken straight
+                to the results screen — no progress is lost.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                Can I track my progress over multiple attempts?
+              </button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#qsFaqAccordion">
+              <div class="accordion-body">
+                Yes. Every attempt is saved to your account so you can compare scores and
+                see how you're improving over time from your dashboard.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                Does it work on mobile devices?
+              </button>
+            </h2>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#qsFaqAccordion">
+              <div class="accordion-body">
+                Absolutely — the entire interface is fully responsive and has been designed
+                to work smoothly on phones, tablets, and desktops alike.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="qs-cta">
+  <div class="container text-center qs-reveal">
+    <h2>Ready to test your knowledge?</h2>
+    <p>Create a free account and take your first timed quiz in under a minute.</p>
+    <a href="{{ url_for('register') }}" class="btn qs-btn-light btn-lg px-5">Get Started — It's Free</a>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/quiz-mock.js') }}"></script>
+{% endblock %}

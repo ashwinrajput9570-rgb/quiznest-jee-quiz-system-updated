@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Manage Quizzes — QuizNest Admin{% endblock %}
+
+{% block content %}
+<section class="qs-section qs-admin-dashboard">
+  <div class="container">
+    <div class="qs-reveal d-flex flex-wrap justify-content-between align-items-end gap-3">
+      <div>
+        <span class="qs-section-eyebrow qs-eyebrow-admin"><i class="bi bi-journal-plus me-1"></i>Admin</span>
+        <h2 class="qs-section-title mb-1">Quizzes</h2>
+        <p class="qs-section-text mb-0">Topic-wise quizzes and full JEE mock tests.</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn qs-btn-outline"><i class="bi bi-arrow-left me-2"></i>Back</a>
+        <a href="{{ url_for('admin_quiz_add') }}" class="btn qs-btn-primary"><i class="bi bi-plus-lg me-2"></i>Create Quiz</a>
+      </div>
+    </div>
+
+    <div class="qs-admin-table-wrap mt-4 qs-reveal">
+      {% if quizzes %}
+      <table class="table qs-admin-table align-middle mb-0">
+        <thead>
+          <tr><th>Title</th><th>Type</th><th>Subject / Topic</th><th>Questions</th><th>Duration</th><th style="width:170px;">Actions</th></tr>
+        </thead>
+        <tbody>
+          {% for z in quizzes %}
+          <tr>
+            <td>{{ z['title'] }}</td>
+            <td>{% if z['is_mock'] %}<span class="qs-quiz-tag">Mock Test</span>{% else %}<span class="qs-quiz-tag">Topic Quiz</span>{% endif %}</td>
+            <td>{{ z['subject_name'] or 'All subjects' }}{% if z['topic_name'] %} / {{ z['topic_name'] }}{% endif %}</td>
+            <td>{{ z['question_count'] }}</td>
+            <td>{{ z['duration_minutes'] }} min</td>
+            <td>
+              <a href="{{ url_for('admin_quiz_builder', quiz_id=z['id']) }}" class="btn btn-sm qs-btn-outline" title="Manage questions"><i class="bi bi-list-check"></i></a>
+              <a href="{{ url_for('admin_quiz_edit', quiz_id=z['id']) }}" class="btn btn-sm qs-btn-outline"><i class="bi bi-pencil"></i></a>
+              <form method="POST" action="{{ url_for('admin_quiz_delete', quiz_id=z['id']) }}" class="d-inline"
+                    onsubmit="return confirm('Delete quiz {{ z['title'] }}?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="qs-admin-empty qs-admin-empty-dashed">
+        <i class="bi bi-inbox"></i>
+        <p>No quizzes yet. <a href="{{ url_for('admin_quiz_add') }}">Create the first one.</a></p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

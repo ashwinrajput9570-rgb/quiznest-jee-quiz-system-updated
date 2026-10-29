@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz['title'] }} — QuizNest{% endblock %}
+
+{% block content %}
+<section class="qs-section qs-quiz-take" style="margin-top:5.5rem;">
+  <div class="container" style="max-width:900px;">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3 qs-reveal">
+      <div>
+        <h2 class="qs-section-title mb-0" style="font-size:1.4rem;">{{ quiz['title'] }}</h2>
+        <p class="qs-section-text mb-0">{{ questions|length }} questions</p>
+      </div>
+      <div class="qs-quiz-timer" style="font-size:1.1rem;">
+        <i class="bi bi-stopwatch-fill me-1"></i><span id="timerDisplay">--:--</span>
+      </div>
+    </div>
+
+    <!-- Question palette -->
+    <div class="qs-reveal mb-3 d-flex flex-wrap gap-2" id="palette">
+      {% for q in questions %}
+      <button type="button" class="btn btn-sm qs-palette-btn" data-index="{{ loop.index0 }}" onclick="showQuestion({{ loop.index0 }})">{{ loop.index }}</button>
+      {% endfor %}
+    </div>
+
+    <form method="POST" action="{{ url_for('quiz_submit', attempt_id=attempt['id']) }}" id="quizForm">
+      {% for q in questions %}
+      {% set q_index = loop.index0 %}
+      <div class="qs-admin-card qs-question-block {% if not loop.first %}d-none{% endif %}" data-index="{{ q_index }}">
+        <p class="qs-quiz-tag mb-2">Question {{ loop.index }} of {{ questions|length }} &middot; {{ q['marks'] }} marks &middot; {{ q['difficulty'] }}</p>
+        <p class="fw-semibold mb-3" style="font-size:1.05rem;">{{ q['question_text'] }}</p>
+        <ul class="qs-quiz-options qs-quiz-options-live">
+          {% for key, text in [('A', q['option_a']), ('B', q['option_b']), ('C', q['option_c']), ('D', q['option_d'])] %}
+          <li>
+            <label class="d-flex align-items-center gap-2 w-100" style="cursor:pointer;">
+              <input type="radio" name="answer_{{ q['id'] }}" value="{{ key }}" class="form-check-input mt-0"
+                     onchange="markAnswered({{ q_index }})"
+                     {% if saved.get(q['id']) == key %}checked{% endif %}>
+              <span class="qs-opt-letter">{{ key }}</span><span>{{ text }}</span>
+            </label>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+
+      <div class="d-flex justify-content-between mt-3 qs-reveal">
+        <button type="button" class="btn qs-btn-outline" id="prevBtn" onclick="changeQuestion(-1)"><i class="bi bi-arrow-left me-1"></i>Previous</button>
+        <button type="button" class="btn qs-btn-outline" id="nextBtn" onclick="changeQuestion(1)">Next<i class="bi bi-arrow-right ms-1"></i></button>
+      </div>
+
+      <div class="text-center mt-4 qs-reveal">
+        <button type="submit" class="btn qs-btn-primary px-5" id="submitBtn" onclick="return confirm('Submit the quiz? You cannot change answers after this.');">
+          <i class="bi bi-check2-circle me-2"></i>Submit Quiz
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  var totalQuestions = {{ questions|length }};
+  var current = 0;
+  var remaining = {{ remaining_seconds }};
+
+  function showQuestion(i) {
+    document.querySelectorAll('.qs-question-block').forEach(function (el) { el.classList.add('d-none'); });
+    var block = document.querySelector('.qs-question-block[data-index="' + i + '"]');
+    if (block) block.classList.remove('d-none');
+    current = i;
+    document.getElementById('prevBtn').disabled = (i === 0);
+    document.getElementById('nextBtn').disabled = (i === totalQuestions - 1);
+    document.querySelectorAll('.qs-palette-btn').forEach(function (btn) {
+      btn.classList.toggle('qs-palette-current', parseInt(btn.dataset.index) === i);
+    });
+  }
+
+  function changeQuestion(delta) {
+    var next = current + delta;
+    if (next >= 0 && next < totalQuestions) showQuestion(next);
+  }
+
+  function markAnswered(i) {
+    var btn = document.querySelector('.qs-palette-btn[data-index="' + i + '"]');
+    if (btn) btn.classList.add('qs-palette-answered');
+  }
+
+  // Mark already-answered questions (from a resumed attempt) on load.
+  document.querySelectorAll('.qs-question-block').forEach(function (block) {
+    var i = parseInt(block.dataset.index);
+    if (block.querySelector('input[type="radio"]:checked')) markAnswered(i);
+  });
+  showQuestion(0);
+
+  function formatTime(s) {
+    var m = Math.floor(s / 60), sec = s % 60;
+    return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+  }
+
+  var timerEl = document.getElementById('timerDisplay');
+  var quizForm = document.getElementById('quizForm');
+  var timerId = null;
+  var submitting = false;
+  // Absolute deadline so the countdown stays accurate even if the tab is throttled.
+  var deadline = Date.now() + remaining * 1000;
+
+  function stopTimer() {
+    if (timerId !== null) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  }
+
+  // Single entry point for both manual and automatic submission.
+  // Stops the timer first, and guarantees the form is posted only once.
+  function beginSubmit() {
+    if (submitting) return false;
+    submitting = true;
+    stopTimer();
+    var btn = document.getElementById('submitBtn');
+    if (btn) btn.disabled = true;
+    return true;
+  }
+
+  // Manual submit (the Submit Quiz button): confirm() in the button's onclick runs first;
+  // by the time this handler fires the student has confirmed.
+  quizForm.addEventListener('submit', function (e) {
+    if (!beginSubmit()) e.preventDefault();
+  });
+
+  function autoSubmit() {
+    if (!beginSubmit()) return;
+    timerEl.textContent = '00:00';
+    quizForm.submit();   // does not fire the 'submit' event, so beginSubmit() was called above
+  }
+
+  function tick() {
+    if (submitting) { stopTimer(); return; }
+    remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    timerEl.textContent = formatTime(remaining);
+    if (remaining <= 0) autoSubmit();
+  }
+
+  timerEl.textContent = formatTime(remaining);
+  if (remaining <= 0) {
+    autoSubmit();
+  } else {
+    timerId = setInterval(tick, 1000);
+  }
+
+  // Cleanup when navigating away / component torn down, and when restored from back-forward cache.
+  window.addEventListener('pagehide', stopTimer);
+  window.addEventListener('beforeunload', stopTimer);
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted && submitting) window.location.reload();  // server redirects to result
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Result — {{ quiz['title'] }}{% endblock %}
+
+{% block content %}
+<section class="qs-section" style="margin-top:5.5rem;">
+  <div class="container" style="max-width:820px;">
+
+    <div class="qs-reveal text-center mb-4">
+      <span class="qs-section-eyebrow">Result</span>
+      <h2 class="qs-section-title">{{ quiz['title'] }}</h2>
+      <div class="row g-3 justify-content-center mt-2">
+        <div class="col-md-4"><div class="qs-stat-card"><i class="bi bi-award"></i><h3>{{ attempt['score']|round(1) }} / {{ attempt['total_marks']|round(1) }}</h3><p>Score</p></div></div>
+        <div class="col-md-4"><div class="qs-stat-card qs-stat-card-alt"><i class="bi bi-percent"></i><h3>{{ percentage }}%</h3><p>Percentage</p></div></div>
+        <div class="col-md-4"><div class="qs-stat-card"><i class="bi bi-check2-circle"></i><h3>{{ correct_count }} / {{ total_count }}</h3><p>Correct answers</p></div></div>
+      </div>
+    </div>
+
+    <h3 class="h6 fw-bold mb-3 qs-reveal">Answer Review</h3>
+    {% for a in answers %}
+    <div class="qs-admin-card mb-3 qs-reveal">
+      <p class="qs-quiz-tag mb-2">Question {{ loop.index }} &middot; {{ a['marks_awarded']|round(1) }}/{{ a['marks'] }} marks &middot; {{ a['difficulty'] }}</p>
+      <p class="fw-semibold mb-3">{{ a['question_text'] }}</p>
+      <ul class="qs-quiz-options" style="pointer-events:none;">
+        {% for key, text in [('A', a['option_a']), ('B', a['option_b']), ('C', a['option_c']), ('D', a['option_d'])] %}
+        <li class="{% if key == a['correct_option'] %}is-correct{% elif key == a['selected_option'] %}is-wrong{% endif %}">
+          <span class="qs-opt-letter">{{ key }}</span>{{ text }}
+          {% if key == a['selected_option'] %}<em class="ms-2 small">(your answer)</em>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+      {% if not a['selected_option'] %}<p class="small text-warning mb-2"><i class="bi bi-exclamation-circle me-1"></i>Not answered.</p>{% endif %}
+      {% if a['explanation'] %}
+      <p class="small text-muted mb-0"><i class="bi bi-lightbulb me-1"></i><strong>Explanation:</strong> {{ a['explanation'] }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="text-center mt-4 mb-5">
+      <a href="{{ url_for('jee_home') }}" class="btn qs-btn-outline me-2"><i class="bi bi-arrow-left me-2"></i>JEE Prep</a>
+      <a href="{{ url_for('my_results') }}" class="btn qs-btn-primary me-2">View All Results</a>
+      <a href="{{ url_for('quiz_certificate', attempt_id=attempt['id']) }}" class="btn qs-btn-primary"><i class="bi bi-file-earmark-pdf me-2"></i>Download Certificate</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
